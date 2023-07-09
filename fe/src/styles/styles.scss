@@ -1,0 +1,37 @@
+:root {
+	// light theme: 
+	--bg-main-light: #013914;
+	--bg-secondary-light: #1dbf73;
+	--txt-color-header-light: #fff;
+	--txt-color-header-menu-light: gray;
+
+	// dark theme: 
+	--bg-secondary-dark: black;
+}
+
+* {
+	body {
+		overflow-x: hidden;
+	}
+
+	.link {
+		text-decoration: none;
+		color: inherit;
+	}
+}
+
+.app {
+	height: 900px;
+}
+
+.light {
+	--bg-main: var(--bg-main-light);
+	--bg-secondary: var(--bg-secondary-light);
+	--text-color-header: var(--txt-color-header-light);
+	--text-color-header-menu: var(--txt-color-header-menu-light);
+}
+
+.dark {
+	--bg-secondary: var(--bg-secondary-dark);
+}
+
