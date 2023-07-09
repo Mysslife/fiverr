@@ -49,8 +49,6 @@ export const login = async (req, res, next) => {
     res
       .cookie("accessToken", token, {
         httpOnly: true, // -> chỉ server mới có quyền tác động đến cookie! client không thể sửa/xóa
-        sameSite: "none", // -> nhiều trường hợp phải set mode này mới set được cookie trên browser
-        secure: true // -> nhiều trường hợp phải set mode này mới set được cookie trên browser
       })
       .status(200)
       .send({ ...info, success: true })
