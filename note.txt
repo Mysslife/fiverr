@@ -1,0 +1,5 @@
+1. cloudinary: samatha020609@gmai.com
+link: https://console.cloudinary.com/console/c-42bbf6f439d1c070f4491a46c10860/media_library/folders/c49d937c050956a3c7b0e533dfa37afb9f
+
+2. Mongodb: samatha020609@gmai.com
+link: https://cloud.mongodb.com/v2/62ea0ce40a5a643eaca35a38#/clusters

@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom'
 
 const GigCard = ({ item }) => {
 	return (
-		<Link className='link' to="/gig/97">
+		<Link className='link' to={`/gig/${item._id}`}>
 			<div className='gigCard'>
-				<img src={item.img} alt="" />
+				<img src={item.cover} alt="" />
 				<div className="info">
 					<div className="user">
 						<img src={item.pp} alt="" />
@@ -15,7 +15,7 @@ const GigCard = ({ item }) => {
 					<p>{item.desc}</p>
 					<div className="star">
 						<img src="./img/star.png" alt="" />
-						<span>{item.star}</span>
+						<span>{!isNaN(item.totalStars / item.starNumber) && Math.round(item.totalStars / item.starNumber)}</span>
 					</div>
 				</div>
 

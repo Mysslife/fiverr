@@ -3,10 +3,12 @@ import './Slide.scss'
 import Slider from 'infinite-react-carousel'
 
 const Slide = ({ children, slidesToShow, arrowsScroll }) => {
+	console.log('children: ', children)
+
 	return (
 		<div className='slide'>
 			<div className="container">
-				<Slider slidesToShow={slidesToShow} arrowsScroll={arrowsScroll}>
+				<Slider autoplay={true} slidesToShow={slidesToShow} arrowsScroll={arrowsScroll}>
 					{children}
 				</Slider>
 			</div>

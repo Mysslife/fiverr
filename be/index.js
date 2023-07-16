@@ -30,7 +30,7 @@ const connect = async () => {
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-  origin: "http://localhost:5173", // -> phải để là domain "localhost" thì mới set được cookie cho browser, còn để ip thì không được (chưa biết vì sao nhưng đã fix được lỗi không set được cookie)
+  origin: ["http://localhost:5173", "http://127.0.0.1:5173"], // -> phải để là domain "localhost" thì mới set được cookie cho browser, còn để ip thì không được (chưa biết vì sao nhưng đã fix được lỗi không set được cookie)
   credentials: true // -> credentials: true, ở cả server và client, để cả 2 chấp nhận rằng cookies sẽ được includes trong header với CORS. -> https://stackoverflow.com/questions/24687313/what-exactly-does-the-access-control-allow-credentials-header-do#:~:text=Responding%20with%20this%20header%20to,origin%20credentialed%20requests%20to%20work.
 }))
 

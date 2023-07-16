@@ -2,6 +2,21 @@ import User from '../models/user.model.js'
 import jwt from "jsonwebtoken"
 import createError from '../utils/createError.js'
 
+// get a user
+export const getUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.body.id || req.params.id)
+    if (!user) return next(createError(404, 'User not found'))
+
+    const { password, ...info } = user._doc
+
+    return res.status(200).json(info)
+  } catch (err) {
+    return next(err)
+  }
+}
+
+
 // delete a user
 export const deleteUser = async (req, res, next) => {
   try {
