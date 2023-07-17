@@ -63,11 +63,12 @@ export const getAllGigs = async (req, res, next) => {
   // -> code: "...(query.price && { price: Number(req.query.priceType) === 0 ? { $gte: 0 } : (Number(req.query.priceType) === 1 ? { $lte: query.price } : { $gte: query.price }) })"
 
   const filters = {
-    ...query.userId && { userId: query.userId },
+    ...query.userId && { userId: query.userId }, // chỉ có seller mới tạo được gig -> ở đây hiểu là find gigs theo sellerId (đặt tên nhầm là userId)
     ...query.cat && { cat: query.cat },
     ...(query.min || query.max) && {
       price: {
-        ...(query.min && { $gte: query.min }), ...(query.max && { $lte: query.max })
+        ...(query.min && { $gte: query.min }),
+        ...(query.max && { $lte: query.max })
       },
     },
     ...query.title && { title: { $regex: query.search, $options: "i" } }

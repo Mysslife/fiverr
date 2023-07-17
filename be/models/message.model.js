@@ -6,13 +6,17 @@ const messageSchema = new Schema({
     type: String,
     required: true,
   },
-  userId: {
+  senderId: {
     type: String,
     required: true,
   },
-  desc: {
+  msg: {
     type: String,
     required: true,
+  },
+  senderPp: {
+    type: String,
+    require: true
   }
 }, {
   timestamps: true

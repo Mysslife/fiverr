@@ -45,7 +45,7 @@ export const login = async (req, res, next) => {
     const isCorrect = bcrypt.compareSync(req.body.password, user.password);
     if (!isCorrect) return next(createError(400, "Wrong identity"))
 
-    const { password, _id, ...info } = user._doc;
+    const { password, ...info } = user._doc;
     res
       .cookie("accessToken", token, {
         httpOnly: true, // -> chỉ server mới có quyền tác động đến cookie! client không thể sửa/xóa

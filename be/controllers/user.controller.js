@@ -16,6 +16,21 @@ export const getUser = async (req, res, next) => {
   }
 }
 
+// get a users
+export const getUsers = async (req, res, next) => {
+  try {
+    const users = await User.find()
+
+    const userItems = users.map(user => {
+      const { _id, username, isSeller, ...info } = user._doc
+      return { _id, username, isSeller }
+    })
+
+    return res.status(200).json(userItems)
+  } catch (err) {
+    return next(err)
+  }
+}
 
 // delete a user
 export const deleteUser = async (req, res, next) => {

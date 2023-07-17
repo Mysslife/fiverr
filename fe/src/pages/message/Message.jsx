@@ -1,206 +1,67 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "./Message.scss";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import newRequest from '../../utils/newRequest'
 
 const Message = () => {
+  const { id } = useParams()
+  const currentUser = JSON.parse(localStorage.getItem("userFiverr"))
+
+  const queryClient = useQueryClient()
+
+  const { isPending, error, data } = useQuery({
+    queryKey: ['messages'],
+    queryFn: () =>
+      newRequest.get(`/messages/single/${id}`).then(res => {
+        return res.data
+      }),
+    enabled: !!id
+  })
+
+  const mutation = useMutation({
+    mutationFn: (message) => {
+      return newRequest.post(`/messages`, message)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["messages"])
+    }
+  })
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    mutation.mutate({ conversationId: id, msg: e.target[0].value });
+    e.target[0].value = "";
+  }
+
   return (
     <div className="message">
-      <div className="container">
-        <span className="breadcrumbs">
-          <Link to="/messages">Messages</Link> {">"} John Doe {">"}
-        </span>
+      {isPending ? "Loading..." : error ? "Something went wrong" : (
+        <div className="container">
+          <span className="breadcrumbs">
+            <Link to="/messages">Messages</Link> {">"} John Doe {">"}
+          </span>
 
-        {/* messages content */}
-        <div className="messages">
-          <div className="item">
-            <img
-              src="https://images.pexels.com/photos/270408/pexels-photo-270408.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos iure
-              mollitia perspiciatis officiis voluptate? Sequi quae officia
-              possimus, iusto labore alias mollitia eveniet nemo placeat
-              laboriosam nisi animi! Error, tenetur!
-            </p>
+          <div className="messages">
+            {data?.map(m => (
+              <div key={m._id} className={(currentUser._id === m.senderId) ? "owner item" : "item"}>
+                <img
+                  src={m.senderPp}
+                  alt=""
+                />
+                <p>{m.msg}</p>
+              </div>
+            ))}
           </div>
-          <div className="item owner">
-            <img
-              src="https://images.pexels.com/photos/1115697/pexels-photo-1115697.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos iure
-              mollitia perspiciatis officiis voluptate? Sequi quae officia
-              possimus, iusto labore alias mollitia eveniet nemo placeat
-              laboriosam nisi animi! Error, tenetur!
-            </p>
-          </div>
-          <div className="item">
-            <img
-              src="https://images.pexels.com/photos/270408/pexels-photo-270408.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos iure
-              mollitia perspiciatis officiis voluptate? Sequi quae officia
-              possimus, iusto labore alias mollitia eveniet nemo placeat
-              laboriosam nisi animi! Error, tenetur!
-            </p>
-          </div>
-          <div className="item owner">
-            <img
-              src="https://images.pexels.com/photos/1115697/pexels-photo-1115697.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos iure
-              mollitia perspiciatis officiis voluptate? Sequi quae officia
-              possimus, iusto labore alias mollitia eveniet nemo placeat
-              laboriosam nisi animi! Error, tenetur!
-            </p>
-          </div>
-          <div className="item">
-            <img
-              src="https://images.pexels.com/photos/270408/pexels-photo-270408.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos iure
-              mollitia perspiciatis officiis voluptate? Sequi quae officia
-              possimus, iusto labore alias mollitia eveniet nemo placeat
-              laboriosam nisi animi! Error, tenetur!
-            </p>
-          </div>
-          <div className="item owner">
-            <img
-              src="https://images.pexels.com/photos/1115697/pexels-photo-1115697.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos iure
-              mollitia perspiciatis officiis voluptate? Sequi quae officia
-              possimus, iusto labore alias mollitia eveniet nemo placeat
-              laboriosam nisi animi! Error, tenetur!
-            </p>
-          </div>
-          <div className="item">
-            <img
-              src="https://images.pexels.com/photos/270408/pexels-photo-270408.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos iure
-              mollitia perspiciatis officiis voluptate? Sequi quae officia
-              possimus, iusto labore alias mollitia eveniet nemo placeat
-              laboriosam nisi animi! Error, tenetur!
-            </p>
-          </div>
-          <div className="item owner">
-            <img
-              src="https://images.pexels.com/photos/1115697/pexels-photo-1115697.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos iure
-              mollitia perspiciatis officiis voluptate? Sequi quae officia
-              possimus, iusto labore alias mollitia eveniet nemo placeat
-              laboriosam nisi animi! Error, tenetur!
-            </p>
-          </div>
-          <div className="item">
-            <img
-              src="https://images.pexels.com/photos/270408/pexels-photo-270408.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos iure
-              mollitia perspiciatis officiis voluptate? Sequi quae officia
-              possimus, iusto labore alias mollitia eveniet nemo placeat
-              laboriosam nisi animi! Error, tenetur!
-            </p>
-          </div>
-          <div className="item owner">
-            <img
-              src="https://images.pexels.com/photos/1115697/pexels-photo-1115697.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos iure
-              mollitia perspiciatis officiis voluptate? Sequi quae officia
-              possimus, iusto labore alias mollitia eveniet nemo placeat
-              laboriosam nisi animi! Error, tenetur!
-            </p>
-          </div>
-          <div className="item">
-            <img
-              src="https://images.pexels.com/photos/270408/pexels-photo-270408.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos iure
-              mollitia perspiciatis officiis voluptate? Sequi quae officia
-              possimus, iusto labore alias mollitia eveniet nemo placeat
-              laboriosam nisi animi! Error, tenetur!
-            </p>
-          </div>
-          <div className="item">
-            <img
-              src="https://images.pexels.com/photos/270408/pexels-photo-270408.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos iure
-              mollitia perspiciatis officiis voluptate? Sequi quae officia
-              possimus, iusto labore alias mollitia eveniet nemo placeat
-              laboriosam nisi animi! Error, tenetur!
-            </p>
-          </div>
-          <div className="item owner">
-            <img
-              src="https://images.pexels.com/photos/1115697/pexels-photo-1115697.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos iure
-              mollitia perspiciatis officiis voluptate? Sequi quae officia
-              possimus, iusto labore alias mollitia eveniet nemo placeat
-              laboriosam nisi animi! Error, tenetur!
-            </p>
-          </div>
-          <div className="item owner">
-            <img
-              src="https://images.pexels.com/photos/1115697/pexels-photo-1115697.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos iure
-              mollitia perspiciatis officiis voluptate? Sequi quae officia
-              possimus, iusto labore alias mollitia eveniet nemo placeat
-              laboriosam nisi animi! Error, tenetur!
-            </p>
-          </div>
-          <div className="item">
-            <img
-              src="https://images.pexels.com/photos/270408/pexels-photo-270408.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos iure
-              mollitia perspiciatis officiis voluptate? Sequi quae officia
-              possimus, iusto labore alias mollitia eveniet nemo placeat
-              laboriosam nisi animi! Error, tenetur!
-            </p>
-          </div>
-        </div>
 
-        {/* input */}
-        <hr />
-        <div className="write">
-          <textarea type="text" placeholder="write a message" />
-          <button>Send</button>
+          {/* input */}
+          <hr />
+          <form className="write" onSubmit={handleSubmit}>
+            <textarea type="text" placeholder="write a message" />
+            <button type="submit">Send</button>
+          </form>
         </div>
-      </div>
+      )}
     </div>
   );
 };

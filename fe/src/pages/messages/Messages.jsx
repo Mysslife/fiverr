@@ -1,84 +1,73 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Messages.scss";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import newRequest from '../../utils/newRequest'
+import moment from "moment"
 
 const Messages = () => {
-  const currentUser = {
-    id: 1,
-    username: "Anna",
-    isSeller: true,
-  };
+  const currentUser = JSON.parse(localStorage.getItem("userFiverr"));
+  const queryClient = useQueryClient()
 
-  const message = `Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident
-  maxime cum corporis esse aspernatur laborum dolorum? Animi
-  molestias aliquam, cum nesciunt, aut, ut quam vitae saepe repellat
-  nobis praesentium placeat.`;
+  const { isPending, error, data } = useQuery({
+    queryKey: ['conversations'],
+    queryFn: () =>
+      newRequest.get(`/conversations`).then(res => {
+        return res.data
+      }),
+  })
+
+  const mutation = useMutation({
+    mutationFn: (id) => {
+      return newRequest.put(`/conversations/${id}`)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["conversations"])
+    }
+  })
+
+  const handleRead = (id) => {
+    mutation.mutate(id)
+  }
 
   return (
     <div className="messages">
-      <div className="container">
-        <div className="title">
-          <h1>Messages</h1>
+      {isPending ? "Loading..." : error ? "Something went wrong" : (
+        <div className="container">
+          <div className="title">
+            <h1>Messages</h1>
+          </div>
+          <table>
+            <tbody>
+              <tr>
+                <th>{currentUser.isSeller ? "Buyer" : "Seller"}</th>
+                <th>Last Message</th>
+                <th style={{ textAlign: "center" }}>Date</th>
+                <th style={{ textAlign: "center" }}>Action</th>
+              </tr>
+
+              {
+                data?.map(conver => (
+                  <tr key={conver.id} className={((currentUser.isSeller && !conver.readBySeller) || (!currentUser.isSeller && !conver.readByBuyer)) ? "active" : ""}>
+                    <td>{currentUser.isSeller ? conver.buyerId : conver.sellerId}</td>
+                    <td>
+                      <Link to={`/message/${conver.id}`} className="link">
+                        {conver?.lastMessage?.substring(0, 100)}...
+                      </Link>
+                    </td>
+                    <td>{moment(conver.updatedAt).fromNow()}</td>
+                    <td>
+                      {((currentUser.isSeller && !conver.readBySeller) || (!currentUser.isSeller && !conver.readByBuyer)) &&
+                        <button onClick={() => handleRead(conver.id)}>Mark as Read</button>
+                      }
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
         </div>
-        <table>
-          <tr>
-            <th>{currentUser.isSeller ? "Buyer" : "Seller"}</th>
-            <th>Last Message</th>
-            <th style={{ textAlign: "center" }}>Date</th>
-            <th style={{ textAlign: "center" }}>Action</th>
-          </tr>
-
-          {/* table data */}
-          <tr className="active">
-            <td>Charley Sharp</td>
-            <td>
-              <Link to="/message/123" className="link">
-                {message.substring(0, 100)}...
-              </Link>
-            </td>
-            <td>1 hour ago</td>
-            <td>
-              <button>Mark as Read</button>
-            </td>
-          </tr>
-          <tr className="active">
-            <td>John Doe</td>
-
-            <td>
-              <Link to="/message/123" className="link">
-                {message.substring(0, 100)}...
-              </Link>
-            </td>
-            <td>2 hours ago</td>
-            <td>
-              <button>Mark as Read</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Elinor Good</td>
-            <td>
-              <Link to="/message/123" className="link">
-                {message.substring(0, 100)}...
-              </Link>
-            </td>
-            <td>1 day ago</td>
-          </tr>
-          <tr>
-            <td>Garner David </td>
-            <td>
-              <Link to="/message/123" className="link">
-                {message.substring(0, 100)}...
-              </Link>
-            </td>
-            <td>2 days ago</td>
-          </tr>
-          <tr>
-            <td>Troy Oliver</td>
-            <td>{message.substring(0, 100)}</td>
-            <td>1 week ago</td>
-          </tr>
-        </table>
-      </div>
+      )}
     </div >
   );
 };
